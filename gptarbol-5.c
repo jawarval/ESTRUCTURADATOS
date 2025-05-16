@@ -157,52 +157,52 @@ int main() {
         switch(opcion) {
             case 1:
                 printf("Ingrese nombre: ");
-                fgets(nombre, 100, stdin);
-                nombre[strcspn(nombre, "\n")] = 0;
+                fgets(nombre, 100, stdin);// Lee una línea de texto con espacios desde el teclado
+                nombre[strcspn(nombre, "\n")] = 0;// Elimina el salto de línea al final
                 printf("Ingrese anio: ");
                 scanf("%d", &anio);
-                getchar();
+                getchar();//Limpia el buffer de entrada para evitar errores al usar fgets después
                 printf("Ingrese genero: ");
-                fgets(genero, 50, stdin);
-                genero[strcspn(genero, "\n")] = 0;
+                fgets(genero, 50, stdin);// Lee el género con espacios
+                genero[strcspn(genero, "\n")] = 0;// Elimina el salto de línea
                 printf("Ingrese recaudacion: ");
-                scanf("%f", &recaudacion);
-                raiz = insertar(raiz, nombre, anio, genero, recaudacion);
+                scanf("%f", &recaudacion);// Lee el valor de recaudación en millones
+                raiz = insertar(raiz, nombre, anio, genero, recaudacion);// Inserta la película en el árbol
                 break;
             case 2:
                 printf("Recorrido Inorden:\n");
-                inorden(raiz);
+                inorden(raiz);// Llama al recorrido inorden del árbol (izquierda - raíz - derecha)
                 break;
             case 3:
                 printf("Recorrido Preorden:\n");
-                preorden(raiz);
+                preorden(raiz);// Llama al recorrido preorden (raíz - izquierda - derecha)
                 break;
             case 4:
                 printf("Recorrido Posorden:\n");
-                posorden(raiz);
+                posorden(raiz);// Llama al recorrido posorden (izquierda - derecha - raíz)
                 break;
             case 5:
                 printf("Ingrese nombre de la pelicula a buscar: ");
-                fgets(nombre, 100, stdin);
-                nombre[strcspn(nombre, "\n")] = 0;
-                buscarPorNombre(raiz, nombre);
+                fgets(nombre, 100, stdin);// Lee el nombre de la película a buscar
+                nombre[strcspn(nombre, "\n")] = 0;// Elimina el salto de línea
+                buscarPorNombre(raiz, nombre);// Busca e imprime información si se encuentra
                 break;
             case 6:
                 printf("Ingrese genero: ");
-                fgets(genero, 50, stdin);
-                genero[strcspn(genero, "\n")] = 0;
-                mostrarPorGenero(raiz, genero);
+                fgets(genero, 50, stdin);// Lee el género
+                genero[strcspn(genero, "\n")] = 0;// Elimina el salto de línea
+                mostrarPorGenero(raiz, genero);// Muestra todas las películas de ese género
                 break;
             case 7:
-                mostrarFracasosTaquilleros(raiz);
+                mostrarFracasosTaquilleros(raiz);// Llama a la función que muestra películas con baja recaudación
                 break;
             case 0:
-                printf("Saliendo del programa\n");
+                printf("Saliendo del programa\n");// Mensaje de salida
                 break;
             default:
-                printf("Opcion no valida\n");
+                printf("Opcion no valida\n");// Opción no reconocida
         }
-    } while(opcion != 0);
+    } while(opcion != 0);// Repite el menú hasta que el usuario ingrese 0
 
     return 0;
 }

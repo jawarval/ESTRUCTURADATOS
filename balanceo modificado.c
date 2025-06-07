@@ -1,76 +1,77 @@
 //Jairo Walinton Ramirez Valencia
-//yeimy Alejandra Berrio Gonzalez
-#include <stdio.h>     // Libreria estandar de entrada/salida
-#include <stdlib.h>    // Libreria para funciones de memoria dinamica
-#include <string.h>    // Libreria para manejo de cadenas
+//Torres Mondragón Ander Jhovany
+//Ortiz Vivas Katherine
 
-// Estructura de un nodo del arbol
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Estructura de un nodo del árbol
 struct Nodo {
-    char nombre[100];        // Nombre de la pelicula
-    int anio;                // Anio de estreno
-    char genero[50];         // Genero de la pelicula
-    float recaudacion;       // Monto recaudado
-    struct Nodo *izquierda;  // Hijo izquierdo
-    struct Nodo *derecha;    // Hijo derecho
+    char nombre[100];
+    int anio;
+    char genero[50];
+    float recaudacion;
+    struct Nodo *izquierda;
+    struct Nodo *derecha;
 };
 
-// Funcion para crear un nuevo nodo con los datos ingresados
 struct Nodo* crearNodo(char nombre[], int anio, char genero[], float recaudacion) {
-    struct Nodo* nuevo = (struct Nodo*)malloc(sizeof(struct Nodo)); // Reserva memoria para el nodo
-    strcpy(nuevo->nombre, nombre);      // Copia el nombre
-    nuevo->anio = anio;                 // Asigna el anio
-    strcpy(nuevo->genero, genero);      // Copia el genero
-    nuevo->recaudacion = recaudacion;  // Asigna la recaudacion
-    nuevo->izquierda = nuevo->derecha = NULL; // Inicializa los hijos
-    return nuevo;                       // Devuelve el nodo creado
+    struct Nodo* nuevo = (struct Nodo*)malloc(sizeof(struct Nodo));
+    if (nuevo == NULL) {
+        perror("Error al asignar memoria para un nuevo nodo");
+        exit(EXIT_FAILURE);
+    }
+    strcpy(nuevo->nombre, nombre);
+    nuevo->anio = anio;
+    strcpy(nuevo->genero, genero);
+    nuevo->recaudacion = recaudacion;
+    nuevo->izquierda = nuevo->derecha = NULL;
+    return nuevo;
 }
 
-// Inserta un nodo en el arbol binario de busqueda
 struct Nodo* insertar(struct Nodo* raiz, char nombre[], int anio, char genero[], float recaudacion) {
-    if (raiz == NULL) return crearNodo(nombre, anio, genero, recaudacion); // Si arbol vacio, crea nodo
-    if (strcmp(nombre, raiz->nombre) < 0)                                  // Si nombre menor, va a izquierda
+    if (raiz == NULL) return crearNodo(nombre, anio, genero, recaudacion);
+    if (strcmp(nombre, raiz->nombre) < 0)
         raiz->izquierda = insertar(raiz->izquierda, nombre, anio, genero, recaudacion);
-    else                                                                   // Si nombre mayor o igual, va a derecha
+    else
         raiz->derecha = insertar(raiz->derecha, nombre, anio, genero, recaudacion);
-    return raiz;                                                           // Retorna la raiz
+    return raiz;
 }
 
-// Busca una pelicula por nombre
 void buscarPorNombre(struct Nodo* raiz, char nombre[]) {
-    if (raiz == NULL) {                              // Si el arbol esta vacio
+    if (raiz == NULL) {
         printf("Pelicula no encontrada.\n");
         return;
     }
-    if (strcmp(nombre, raiz->nombre) == 0) {         // Si se encuentra la pelicula
+    int cmp = strcmp(nombre, raiz->nombre);
+    if (cmp == 0) {
         printf("\nNombre: %s\nAnio: %d\nGenero: %s\nRecaudacion: %.2f\n", raiz->nombre, raiz->anio, raiz->genero, raiz->recaudacion);
-    } else if (strcmp(nombre, raiz->nombre) < 0) {   // Buscar en subarbol izquierdo
+    } else if (cmp < 0) {
         buscarPorNombre(raiz->izquierda, nombre);
-    } else {                                         // Buscar en subarbol derecho
+    } else {
         buscarPorNombre(raiz->derecha, nombre);
     }
 }
 
-// Muestra peliculas por genero
 void filtrarPorGenero(struct Nodo* raiz, char genero[]) {
-    if (raiz == NULL) return; // Si el arbol esta vacio
-    filtrarPorGenero(raiz->izquierda, genero); // Busca en el subarbol izquierdo
-    if (strcmp(raiz->genero, genero) == 0) {   // Si coincide el genero
+    if (raiz == NULL) return;
+    filtrarPorGenero(raiz->izquierda, genero);
+    if (strcmp(raiz->genero, genero) == 0) {
         printf("\nNombre: %s\nAnio: %d\nGenero: %s\nRecaudacion: %.2f\n", raiz->nombre, raiz->anio, raiz->genero, raiz->recaudacion);
     }
-    filtrarPorGenero(raiz->derecha, genero);  // Busca en el subarbol derecho
+    filtrarPorGenero(raiz->derecha, genero);
 }
 
-// Muestra peliculas por anio
 void mostrarPorAnio(struct Nodo* raiz, int anio) {
     if (raiz == NULL) return;
-    mostrarPorAnio(raiz->izquierda, anio);     // Recorre izquierdo
-    if (raiz->anio == anio) {                  // Si coincide anio
+    mostrarPorAnio(raiz->izquierda, anio);
+    if (raiz->anio == anio) {
         printf("\nNombre: %s\nAnio: %d\nGenero: %s\nRecaudacion: %.2f\n", raiz->nombre, raiz->anio, raiz->genero, raiz->recaudacion);
     }
-    mostrarPorAnio(raiz->derecha, anio);      // Recorre derecho
+    mostrarPorAnio(raiz->derecha, anio);
 }
 
-// Recorridos del arbol
 void mostrarInOrden(struct Nodo* raiz) {
     if (raiz == NULL) return;
     mostrarInOrden(raiz->izquierda);
@@ -92,13 +93,11 @@ void mostrarPostOrden(struct Nodo* raiz) {
     printf("\nNombre: %s\nAnio: %d\nGenero: %s\nRecaudacion: %.2f\n", raiz->nombre, raiz->anio, raiz->genero, raiz->recaudacion);
 }
 
-// Cuenta la cantidad de nodos del arbol
 int contarNodos(struct Nodo* raiz) {
     if (raiz == NULL) return 0;
     return 1 + contarNodos(raiz->izquierda) + contarNodos(raiz->derecha);
 }
 
-// Llena un arreglo con los nodos para ordenarlos
 void llenarArreglo(struct Nodo* raiz, struct Nodo** arreglo, int* index) {
     if (raiz == NULL) return;
     llenarArreglo(raiz->izquierda, arreglo, index);
@@ -106,54 +105,48 @@ void llenarArreglo(struct Nodo* raiz, struct Nodo** arreglo, int* index) {
     llenarArreglo(raiz->derecha, arreglo, index);
 }
 
-// Funcion para ordenar por recaudacion con qsort
 int compararRecaudacion(const void* a, const void* b) {
     struct Nodo* nodoA = *(struct Nodo**)a;
     struct Nodo* nodoB = *(struct Nodo**)b;
-    if (nodoA->recaudacion < nodoB->recaudacion) return -1;
-    else if (nodoA->recaudacion > nodoB->recaudacion) return 1;
-    return 0;
+    return (nodoA->recaudacion > nodoB->recaudacion) - (nodoA->recaudacion < nodoB->recaudacion);
 }
 
-// Muestra las tres peliculas con menor recaudacion
 void mostrarTresMenores(struct Nodo* raiz) {
-    int total = contarNodos(raiz); // Cuenta los nodos
-    if (total < 3) {
-        printf("Hay menos de tres peliculas registradas.\n");
+    int total = contarNodos(raiz);
+    if (total == 0) {
+        printf("No hay peliculas registradas.\n");
         return;
     }
-    struct Nodo** arreglo = (struct Nodo**)malloc(total * sizeof(struct Nodo*));
+    struct Nodo** arreglo = malloc(total * sizeof(struct Nodo*));
     int index = 0;
     llenarArreglo(raiz, arreglo, &index);
     qsort(arreglo, total, sizeof(struct Nodo*), compararRecaudacion);
-    printf("\nTres peliculas con menor recaudacion:\n");
-    for (int i = 0; i < 3; i++) {
+    printf("\n--- Tres peliculas con menor recaudacion ---\n");
+    for (int i = 0; i < (total > 3 ? 3 : total); i++) {
         printf("\nNombre: %s\nAnio: %d\nGenero: %s\nRecaudacion: %.2f\n", arreglo[i]->nombre, arreglo[i]->anio, arreglo[i]->genero, arreglo[i]->recaudacion);
     }
-    free(arreglo); // Libera el arreglo
+    free(arreglo);
 }
 
-// Encuentra el nodo minimo del subarbol derecho
 struct Nodo* encontrarMinimo(struct Nodo* nodo) {
     while (nodo->izquierda != NULL) nodo = nodo->izquierda;
     return nodo;
 }
 
-// Elimina un nodo por nombre
 struct Nodo* eliminarPorNombre(struct Nodo* raiz, char nombre[]) {
     if (raiz == NULL) return NULL;
     int cmp = strcmp(nombre, raiz->nombre);
     if (cmp < 0) raiz->izquierda = eliminarPorNombre(raiz->izquierda, nombre);
     else if (cmp > 0) raiz->derecha = eliminarPorNombre(raiz->derecha, nombre);
     else {
-        if (raiz->izquierda == NULL && raiz->derecha == NULL) {
-            free(raiz); return NULL;
-        } else if (raiz->izquierda == NULL) {
+        if (raiz->izquierda == NULL) {
             struct Nodo* temp = raiz->derecha;
-            free(raiz); return temp;
+            free(raiz);
+            return temp;
         } else if (raiz->derecha == NULL) {
             struct Nodo* temp = raiz->izquierda;
-            free(raiz); return temp;
+            free(raiz);
+            return temp;
         } else {
             struct Nodo* sucesor = encontrarMinimo(raiz->derecha);
             strcpy(raiz->nombre, sucesor->nombre);
@@ -166,7 +159,43 @@ struct Nodo* eliminarPorNombre(struct Nodo* raiz, char nombre[]) {
     return raiz;
 }
 
-// Libera toda la memoria del arbol
+struct Nodo* buildBalancedBST(struct Nodo** nodes, int start, int end) {
+    if (start > end) return NULL;
+    int mid = (start + end) / 2;
+    struct Nodo* root = nodes[mid];
+    root->izquierda = buildBalancedBST(nodes, start, mid - 1);
+    root->derecha = buildBalancedBST(nodes, mid + 1, end);
+    return root;
+}
+
+void mostrarArregloOrdenadoPorNombre(struct Nodo** arreglo, int total) {
+    printf("\n--- Arreglo ordenado por nombre (inorden) ---\n");
+    for (int i = 0; i < total; i++) {
+        printf("\nNombre: %s\nAnio: %d\nGenero: %s\nRecaudacion: %.2f\n", 
+               arreglo[i]->nombre, arreglo[i]->anio, arreglo[i]->genero, arreglo[i]->recaudacion);
+    }
+}
+
+struct Nodo* balancearArbol(struct Nodo* root) {
+    int count = contarNodos(root);
+    if (count == 0) {
+        printf("El arbol esta vacio.\n");
+        return NULL;
+    }
+
+    struct Nodo** nodes = malloc(count * sizeof(struct Nodo*));
+    int index = 0;
+    llenarArreglo(root, nodes, &index);
+    struct Nodo* balancedRoot = buildBalancedBST(nodes, 0, count - 1);
+    printf("Arbol balanceado con exito.\n");
+
+    // Mostrar el arreglo ordenado por nombre
+    mostrarArregloOrdenadoPorNombre(nodes, count);
+
+    free(nodes);
+    return balancedRoot;
+}
+
 void liberarArbol(struct Nodo* raiz) {
     if (raiz == NULL) return;
     liberarArbol(raiz->izquierda);
@@ -174,7 +203,6 @@ void liberarArbol(struct Nodo* raiz) {
     free(raiz);
 }
 
-// Funcion principal
 int main() {
     struct Nodo* raiz = NULL;
     int opcion, anio;
@@ -192,6 +220,7 @@ int main() {
         printf("7. Mostrar peliculas (postorden)\n");
         printf("8. Mostrar tres peliculas con menor recaudacion\n");
         printf("9. Eliminar pelicula por nombre\n");
+        printf("10. Balancear Arbol ABB y mostrar ordenado\n");
         printf("0. Salir\n");
         printf("Seleccione una opcion: ");
         scanf("%d", &opcion);
@@ -210,52 +239,48 @@ int main() {
                 genero[strcspn(genero, "\n")] = 0;
                 printf("Ingrese recaudacion: ");
                 scanf("%f", &recaudacion);
-                getchar();
                 raiz = insertar(raiz, nombre, anio, genero, recaudacion);
                 break;
             case 2:
-                printf("Ingrese nombre: ");
+                printf("Ingrese nombre a buscar: ");
                 fgets(nombre, 100, stdin);
                 nombre[strcspn(nombre, "\n")] = 0;
                 buscarPorNombre(raiz, nombre);
                 break;
             case 3:
-                printf("Ingrese genero: ");
+                printf("Ingrese genero a filtrar: ");
                 fgets(genero, 50, stdin);
                 genero[strcspn(genero, "\n")] = 0;
                 filtrarPorGenero(raiz, genero);
                 break;
             case 4:
-                printf("Ingrese anio: ");
+                printf("Ingrese anio a mostrar: ");
                 scanf("%d", &anio);
-                getchar();
                 mostrarPorAnio(raiz, anio);
                 break;
             case 5:
-                printf("Peliculas en inorden:\n");
                 mostrarInOrden(raiz);
                 break;
             case 6:
-                printf("Peliculas en preorden:\n");
                 mostrarPreOrden(raiz);
                 break;
             case 7:
-                printf("Peliculas en postorden:\n");
                 mostrarPostOrden(raiz);
                 break;
             case 8:
                 mostrarTresMenores(raiz);
                 break;
             case 9:
-                printf("Ingrese nombre de la pelicula a eliminar: ");
+                printf("Ingrese nombre a eliminar: ");
                 fgets(nombre, 100, stdin);
                 nombre[strcspn(nombre, "\n")] = 0;
                 raiz = eliminarPorNombre(raiz, nombre);
-                printf("Pelicula eliminada (si existia).\n");
+                break;
+            case 10:
+                raiz = balancearArbol(raiz);
                 break;
             case 0:
                 liberarArbol(raiz);
-                printf("Programa finalizado.\n");
                 break;
             default:
                 printf("Opcion no valida.\n");
